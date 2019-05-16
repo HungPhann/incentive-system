@@ -43,12 +43,12 @@ func (a *AccountBalance) Invoke(APIstub shim.ChaincodeStubInterface) peer.Respon
 		result, err = queryToken(APIstub, args)
 	} else if function == "issueToken" {
 		result, err = issueToken(APIstub, args)
+	} else if function == "spendToken" {
+		result, err = spendToken(APIstub, args)
 	} else {
 		return shim.Error("Invalid Smart Contract function name.")
 	}
-	// else if function == "spendToken" {
-	// 	return a.spendToken(APIstub, args)
-	// }s
+	
 
 	if err != nil {
 		return shim.Error(err.Error())
@@ -114,8 +114,45 @@ func issueToken(APIstub shim.ChaincodeStubInterface, args []string) (string, err
 	} else {
 		return "", fmt.Errorf("Failed to parse token: %s with error: %s", args[1], err)
 	}
-
 }
+
+func spendToken(APIstub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 2 {
+		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value")
+	}
+
+	accountBalanceAsBytes, err := APIstub.GetState(args[0])
+
+	if err != nil {
+		return "", fmt.Errorf("Failed to get asset: %s with error: %s", args[0], err)
+	}
+	if accountBalanceAsBytes == nil {
+		return "", fmt.Errorf("Asset not found: %s", args[0])
+	}
+
+	if token, err := strconv.ParseFloat(args[1], 64); err == nil {
+		currentToken, parseError := strconv.ParseFloat(string(accountBalanceAsBytes), 64)
+		
+		if parseError != nil{
+			return "", fmt.Errorf("Failed to parse current token error: %s", parseError)
+		}
+
+		if token > currentToken{
+			return "", fmt.Errorf("The account balance is smaller than spending tokens")
+		}
+
+		err_tmp := APIstub.PutState(args[0], []byte(strconv.FormatFloat(currentToken-token, 'f', 6, 64)))
+	
+		if err_tmp != nil {
+			return "", fmt.Errorf("Failed to update ledger")
+		}
+	
+		return strconv.FormatFloat(currentToken-token, 'f', 6, 64), nil
+	} else {
+		return "", fmt.Errorf("Failed to parse token: %s with error: %s", args[1], err)
+	}
+}
+
 
 func float64ToByte(f float64) []byte {
 	var buf bytes.Buffer
