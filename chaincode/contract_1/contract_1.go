@@ -21,6 +21,8 @@
 
  // Response template
  type GetVoucherResponse struct {
+	AccountID string
+	CompanyID string
 	SpendToken float64
 	Voucher float64
 }
@@ -123,6 +125,8 @@ type QueryTokenResponse struct {
 	}
 
 	response := GetVoucherResponse{
+		AccountID: args[0],
+		CompanyID: "Company 1",
 		SpendToken: spendToken,
 		Voucher: voucher,
 	}
