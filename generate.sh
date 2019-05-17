@@ -5,8 +5,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/bin:${PWD}:$PATH
-export FABRIC_CFG_PATH=${PWD}
-CHANNEL_NAME=mychannel
 
 # remove previous crypto material and config transactions
 rm -fr config/*
@@ -19,12 +17,16 @@ if [ "$?" -ne 0 ]; then
   exit 1
 fi
 
+export FABRIC_CFG_PATH=${PWD}
+
 # generate genesis block for orderer
-./bin/configtxgen -profile ThreeOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+./bin/configtxgen -profile ThreeOrgsOrdererGenesis -channelID byfn-sys-channel -outputBlock ./channel-artifacts/genesis.block
 if [ "$?" -ne 0 ]; then
   echo "Failed to generate orderer genesis block..."
   exit 1
 fi
+
+export CHANNEL_NAME=mychannel
 
 # generate channel configuration transaction
 ./bin/configtxgen -profile MyChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
