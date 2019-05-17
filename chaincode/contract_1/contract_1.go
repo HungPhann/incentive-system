@@ -77,9 +77,9 @@ type QueryTokenResponse struct {
 		 return "", fmt.Errorf("Failed to parse token: %s with error: %s", args[1], err)
 	 }
 
-	 chaincodeName := "mycc"
+	 chaincodeName := "contract_0"
 	 invokeArgs := [][]byte{[]byte("queryToken"), []byte(userID)}
-	 channel := "myc"
+	 channel := "mychannel"
 
 	 queryTokenResponse := APIstub.InvokeChaincode(chaincodeName, invokeArgs, channel)
 
@@ -110,9 +110,9 @@ type QueryTokenResponse struct {
 		spendToken = token
 	}
 
-	chaincodeName = "mycc"
+	chaincodeName = "contract_0"
 	invokeArgs = [][]byte{[]byte("spendToken"), []byte(userID), []byte(strconv.FormatFloat(spendToken, 'f', 6, 64))}
-	channel = "myc"
+	channel = "mychannel"
 
 	spendTokenResponse := APIstub.InvokeChaincode(chaincodeName, invokeArgs, channel)
 
