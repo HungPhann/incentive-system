@@ -1,0 +1,99 @@
+{
+    "name": "incentive-network",
+    "version": "1.0.0",
+    "client": {
+        "organization": "Org0",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "channels": {
+        "mychannel": {
+            "orderers": [
+                "orderer.example.com"
+            ],
+            "peers": {
+                "peer0.org1.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "ledgerQuery": true,
+                    "eventSource": true
+                },
+                "peer0.org2.example.com": {
+                    "endorsingPeer": true,
+                    "chaincodeQuery": true,
+                    "ledgerQuery": true,
+                    "eventSource": true
+                }
+            },
+            "chaincodes": [
+                "contract_0:1.0",
+                "company1_contract:1.0",
+                "company2_contract:1.0"
+            ]
+        }
+    },
+    "organizations": {
+        "Org0": {
+            "mspid": "Org0MSP",
+            "peers": [
+            ],
+            "certificateAuthorities": [
+                "ca.org0.example.com"
+            ]
+        },
+        "Org1": {
+            "mspid": "Org1MSP",
+            "peers": [
+                "peer0.org1.example.com"
+            ],
+            "certificateAuthorities": [
+            ]
+        },"Org2": {
+            "mspid": "Org2MSP",
+            "peers": [
+                "peer0.org2.example.com"
+            ],
+            "certificateAuthorities": [
+            ]
+        }
+    },
+    "orderers": {
+        "orderer.example.com": {
+            "url": "grpc://localhost:7050",
+            "grpcOptions": {
+                "ssl-target-name-override": "orderer.example.com"
+            },
+            "tlsCACerts": ""
+        }
+    },
+    "peers": {
+        "peer0.org1.example.com": {
+            "url": "grpc://localhost:7051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org1.example.com",
+                "request-timeout": 120
+            },
+            "tlsCACerts": ""
+        },
+        "peer0.org2.example.com": {
+            "url": "grpc://localhost:8051",
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org2.example.com",
+                "request-timeout": 120
+            },
+            "tlsCACerts": ""
+        }
+    },
+    "certificateAuthorities": {
+        "ca.org0.example.com": {
+            "url": "http://localhost:7054",
+            "caName": "ca.org0.example.com"
+        }
+    }
+}
